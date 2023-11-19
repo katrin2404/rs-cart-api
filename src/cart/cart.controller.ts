@@ -20,13 +20,18 @@ export class CartController {
 
 
     if (userId) {
-      cart = await lookup(`SELECT * FROM carts where id = '${userId}'`);
-      cartItems = await lookup(`SELECT * FROM cart_items where cart_id = '${userId}'`);
+      cart = await lookup(`SELECT * FROM carts where user_id = '${userId}'`);
+      for (const item of cart.rows) {
+        cartItems = await lookup(`SELECT * FROM cart_items where cart_id = '${item.id}'`);
+        if (cartItems.rows.length) {
+          break ;
+        }
+      }
 
       return {
         statusCode: HttpStatus.OK,
-        message: 'OK',
-        data: { cart: cart.rows[0], cart_items: cartItems.rows },
+        message: 'Active cart for selected user',
+        data: { cart: cart.rows.filter(row => row.status !== 'ORDERED'), cart_items: cartItems.rows },
       }
     }
 
@@ -36,7 +41,7 @@ export class CartController {
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
-      data: { cart: cart.rows, total: calculateCartTotal(cart) },
+      data: { cart: cart.rows, cart_items: cartItems.rows },
     }
   }
 

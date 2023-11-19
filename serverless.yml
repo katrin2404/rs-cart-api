@@ -10,7 +10,6 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: eu-west-1
-  profile: personal-user
   stage: dev
   environment:
     DATABASE_HOST: "${env:DATABASE_HOST}"

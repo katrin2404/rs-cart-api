@@ -24,7 +24,7 @@ export const lookup = async (query: string) => {
     const client = await pool.connect();
 
     try {
-        return await client.query(query);
+        return  await client.query(query);
     } catch (error) {
         console.log(error);
     } finally {
